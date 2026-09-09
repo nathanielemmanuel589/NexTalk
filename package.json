@@ -1,0 +1,15 @@
+{
+  "name": "chat-app",
+  "version": "1.0.0",
+  "description": "Real-time chat messaging app with React Native and Node.js",
+  "scripts": {
+    "setup": "npm install --prefix backend && npm install --prefix mobile && npm install -g expo-cli",
+    "init-db": "node backend/init-database.js",
+    "backend": "npm start --prefix backend",
+    "mobile": "npm start --prefix mobile",
+    "dev": "echo Please run 'npm run backend' and 'npm run mobile' in separate terminals"
+  },
+  "keywords": ["chat", "messaging", "real-time", "react-native", "nodejs"],
+  "author": "",
+  "license": "ISC"
+}

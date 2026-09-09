@@ -1,0 +1,464 @@
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                    NEXTALK FEATURE FLOW DIAGRAMS                          ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+
+═══════════════════════════════════════════════════════════════════════════
+  1️⃣  EDIT MESSAGE FLOW ✏️
+═══════════════════════════════════════════════════════════════════════════
+
+   USER A (Sender)                                      USER B (Receiver)
+   ───────────────                                      ────────────────
+   
+   📱 Sends message:
+   "Helo there"
+   
+             │
+             ├─────────[Socket.IO]────────────────────> 📱 Receives:
+             │                                            "Helo there"
+             │
+   📱 Long press message
+      → "Edit Message"
+   
+   📝 Types: "Hello there!"
+      → Click "Save"
+   
+             │
+             ├─────[Check: within 10 min?]
+             │
+             ├───[YES]───────> Backend updates DB:
+             │                 - message_text = "Hello there!"
+             │                 - edited_at = NOW()
+             │
+             ├─────[Socket.IO emit: message_edited]──> 📱 Message updates:
+             │                                            "Hello there!"
+             │                                            Edited ← Gray tag
+             │
+   📱 Message updates:
+   "Hello there!"
+   Edited ← Gray tag
+
+
+═══════════════════════════════════════════════════════════════════════════
+  2️⃣  DELETE FOR EVERYONE FLOW 🗑️
+═══════════════════════════════════════════════════════════════════════════
+
+   USER A (Sender)                                      USER B (Receiver)
+   ───────────────                                      ────────────────
+   
+   📱 Sends message:
+   "Oops wrong chat"
+   
+             │
+             ├─────────[Socket.IO]────────────────────> 📱 Receives:
+             │                                            "Oops wrong chat"
+             │
+   📱 Long press message
+      → "Delete for Everyone"
+   
+   ⚠️  Confirm deletion?
+      → "Delete"
+   
+             │
+             ├─────[Check: within 10 min?]
+             │
+             ├───[YES]───────> Backend updates DB:
+             │                 - is_deleted = TRUE
+             │                 - message_text = NULL
+             │                 - file_url = NULL
+             │
+             ├─────[Socket.IO emit: message_deleted]──> 📱 Message becomes:
+             │                                            🚫 This message
+             │                                               was deleted
+             │
+   📱 Message becomes:
+   🚫 This message
+      was deleted
+
+
+═══════════════════════════════════════════════════════════════════════════
+  3️⃣  MESSAGE REACTION FLOW 😍
+═══════════════════════════════════════════════════════════════════════════
+
+   USER A                                               USER B
+   ──────                                               ──────
+   
+   📱 Long press message
+      → "❤️ Add Reaction"
+   
+   😍 Pick: ❤️
+   
+             │
+             ├─────> Backend saves to DB:
+             │       INSERT INTO message_reactions
+             │       (message_id, user_id, reaction)
+             │       VALUES (123, A, '❤️')
+             │
+             ├─────[Socket.IO emit: reaction_updated]──> 📱 Reaction appears:
+             │                                            ┌──────────────┐
+             │                                            │ Great idea!  │
+             │                                            │ ❤️ 1         │
+             │                                            └──────────────┘
+             │
+   📱 Reaction appears:
+   ┌──────────────┐
+   │ Great idea!  │
+   │ ❤️ 1         │ ← Blue background (your reaction)
+   └──────────────┘
+   
+   
+   USER B ALSO ADDS ❤️:
+   ────────────────────
+   
+                                                        📱 Long press
+                                                           → Add Reaction
+                                                           → Pick ❤️
+                                                        
+                                                                  │
+                  Backend saves:                                  │
+                  message_reactions:                              │
+                  - User A: ❤️  ◄─────────────────────────────────┤
+                  - User B: ❤️                                    │
+                                                                  │
+   📱 Counter updates:              ◄────[Socket.IO]──────────────┤
+   ┌──────────────┐                                               │
+   │ Great idea!  │                                    📱 Counter shows:
+   │ ❤️ 2         │ ← Counter incremented              ┌──────────────┐
+   └──────────────┘                                    │ Great idea!  │
+                                                       │ ❤️ 2         │
+                                                       └──────────────┘
+
+
+═══════════════════════════════════════════════════════════════════════════
+  🔄 REAL-TIME SYNC FLOW (Socket.IO)
+═══════════════════════════════════════════════════════════════════════════
+
+   USER A                    SERVER                         USER B
+   ──────                    ──────                         ──────
+   
+   📱 Connected            🖥️ Server running              📱 Connected
+   Socket ID: abc123       Port: 3000                     Socket ID: xyz789
+   
+             │                    │                              │
+             ├────[authenticate]──>│                              │
+             │    (JWT token)      │                              │
+             │                     ├──[Store: User A = abc123]   │
+             │                     │                              │
+             │◄───[authenticated]──┤                              │
+             │                     │                              │
+             │                     │◄────[authenticate]───────────┤
+             │                     │     (JWT token)              │
+             │                     ├──[Store: User B = xyz789]   │
+             │                     │                              │
+             │                     ├───[authenticated]───────────>│
+             │                     │                              │
+   
+   📱 Edit message          │                              │
+   emit: edit_message       │                              │
+             │              │                              │
+             ├─────────────>│                              │
+             │              ├──[Update DB]                 │
+             │              │   edited_at = NOW()          │
+             │              │                              │
+             │              ├──[Get User B socket ID]      │
+             │              │   = xyz789                   │
+             │              │                              │
+             │              ├───[emit to xyz789]──────────>│
+             │              │   message_edited              📱 Message updates
+             │              │                              │   instantly!
+             │◄─────────────┤                              │
+   📱 Message updates       │   message_edited             │
+      instantly!            │                              │
+
+
+═══════════════════════════════════════════════════════════════════════════
+  ⏰ TIME LIMIT VALIDATION FLOW
+═══════════════════════════════════════════════════════════════════════════
+
+   USER ACTION                      SERVER CHECK                  RESULT
+   ───────────                      ────────────                  ──────
+   
+   📱 Try to edit message           🖥️ Get message.created_at    
+                                       
+                                       message_time = 2024-09-05 08:20:00
+                                       current_time = 2024-09-05 08:25:00
+                                       
+                                       diff = 5 minutes
+                                       
+                                    ├──[Is diff <= 10 min?]
+                                    │
+                                    ├───[YES]──> ✅ Allow edit
+                                    │
+   
+   
+   📱 Try to edit message           🖥️ Get message.created_at
+      (after 11 minutes)            
+                                       message_time = 2024-09-05 08:20:00
+                                       current_time = 2024-09-05 08:32:00
+                                       
+                                       diff = 12 minutes
+                                       
+                                    ├──[Is diff <= 10 min?]
+                                    │
+                                    ├───[NO]──> ❌ Reject:
+                                                  "Can only edit messages
+                                                   within 10 minutes"
+   
+   📱 Error shown:
+   ⚠️  "Can only edit messages
+       within 10 minutes"
+
+
+═══════════════════════════════════════════════════════════════════════════
+  📊 DATABASE OPERATIONS
+═══════════════════════════════════════════════════════════════════════════
+
+   EDIT MESSAGE:
+   ─────────────
+   UPDATE messages 
+   SET message_text = 'New text',
+       edited_at = NOW()
+   WHERE id = 123;
+   
+   Result in DB:
+   ┌────┬──────────────┬──────────┬─────────────────────┬─────────────────────┐
+   │ id │ message_text │ ...      │ created_at          │ edited_at           │
+   ├────┼──────────────┼──────────┼─────────────────────┼─────────────────────┤
+   │123 │ New text     │ ...      │ 2024-09-05 08:20:00 │ 2024-09-05 08:25:00 │
+   └────┴──────────────┴──────────┴─────────────────────┴─────────────────────┘
+
+
+   DELETE FOR EVERYONE:
+   ────────────────────
+   UPDATE messages 
+   SET is_deleted = TRUE,
+       message_text = NULL,
+       file_url = NULL
+   WHERE id = 124;
+   
+   Result in DB:
+   ┌────┬──────────────┬──────────┬────────────┐
+   │ id │ message_text │ file_url │ is_deleted │
+   ├────┼──────────────┼──────────┼────────────┤
+   │124 │ NULL         │ NULL     │ TRUE       │
+   └────┴──────────────┴──────────┴────────────┘
+
+
+   ADD REACTION:
+   ─────────────
+   INSERT INTO message_reactions 
+   (message_id, user_id, reaction)
+   VALUES (125, 1, '❤️')
+   ON DUPLICATE KEY UPDATE 
+       reaction = '❤️',
+       created_at = NOW();
+   
+   Result in DB:
+   ┌────┬────────────┬─────────┬──────────┬─────────────────────┐
+   │ id │ message_id │ user_id │ reaction │ created_at          │
+   ├────┼────────────┼─────────┼──────────┼─────────────────────┤
+   │ 1  │ 125        │ 1       │ ❤️       │ 2024-09-05 08:30:00 │
+   │ 2  │ 125        │ 2       │ 👍       │ 2024-09-05 08:31:00 │
+   │ 3  │ 125        │ 3       │ ❤️       │ 2024-09-05 08:32:00 │
+   └────┴────────────┴─────────┴──────────┴─────────────────────┘
+   
+   Display as: ❤️ 2  👍 1
+
+
+═══════════════════════════════════════════════════════════════════════════
+  🎨 UI COMPONENT RENDERING
+═══════════════════════════════════════════════════════════════════════════
+
+   REGULAR MESSAGE:
+   ────────────────
+   ┌─────────────────────┐
+   │ Hello there!        │  ← message_text
+   │         8:30 PM  ✓✓ │  ← created_at, is_read
+   └─────────────────────┘
+
+
+   EDITED MESSAGE:
+   ───────────────
+   ┌─────────────────────┐
+   │ Hello there!        │  ← message_text
+   │ Edited              │  ← if (edited_at) show this
+   │         8:30 PM  ✓✓ │  ← created_at, is_read
+   └─────────────────────┘
+
+
+   DELETED MESSAGE:
+   ────────────────
+   ┌─────────────────────┐
+   │ 🚫 This message     │  ← if (is_deleted) show this
+   │    was deleted      │     instead of message_text
+   └─────────────────────┘
+
+
+   MESSAGE WITH REACTIONS:
+   ───────────────────────
+   ┌─────────────────────┐
+   │ Great idea!         │  ← message_text
+   │                     │
+   │ ❤️ 2  👍 1  😂 3    │  ← reactions grouped by emoji
+   │         8:30 PM  ✓✓ │     with counts
+   └─────────────────────┘
+   
+   React Data Structure:
+   {
+     id: 123,
+     message_text: "Great idea!",
+     reactions: [
+       { reaction: '❤️', user_id: 1, username: 'emma' },
+       { reaction: '❤️', user_id: 2, username: 'john' },
+       { reaction: '👍', user_id: 3, username: 'alex' },
+       { reaction: '😂', user_id: 4, username: 'sarah' },
+       { reaction: '😂', user_id: 5, username: 'mike' },
+       { reaction: '😂', user_id: 6, username: 'jane' },
+     ]
+   }
+   
+   Grouped Display:
+   ❤️: [1, 2] → ❤️ 2
+   👍: [3] → 👍 1
+   😂: [4, 5, 6] → 😂 3
+
+
+═══════════════════════════════════════════════════════════════════════════
+  🔐 PERMISSION CHECKS
+═══════════════════════════════════════════════════════════════════════════
+
+   EDIT MESSAGE:
+   ─────────────
+   Can edit IF:
+   ✅ message.sender_id === current_user.id  (your message)
+   ✅ message.message_type === 'text'        (text only)
+   ✅ (now - created_at) <= 10 minutes       (time limit)
+   
+   Cannot edit IF:
+   ❌ Someone else's message
+   ❌ Image or file message
+   ❌ More than 10 minutes old
+
+
+   DELETE FOR EVERYONE:
+   ────────────────────
+   Can delete IF:
+   ✅ message.sender_id === current_user.id  (your message)
+   ✅ (now - created_at) <= 10 minutes       (time limit)
+   
+   Cannot delete IF:
+   ❌ Someone else's message
+   ❌ More than 10 minutes old
+
+
+   DELETE FOR ME:
+   ──────────────
+   Can delete IF:
+   ✅ message.sender_id === current_user.id  (your message)
+   ✅ No time limit!
+   
+   Cannot delete IF:
+   ❌ Someone else's message
+
+
+   ADD REACTION:
+   ─────────────
+   Can react IF:
+   ✅ Always! (any message, any time)
+   ✅ No time limit
+   ✅ Anyone can react to any message
+   
+   Note: Each user can have only 1 reaction per message
+         (adding new reaction replaces old one)
+
+
+═══════════════════════════════════════════════════════════════════════════
+  📡 SOCKET.IO EVENT FLOW
+═══════════════════════════════════════════════════════════════════════════
+
+   EMIT EVENTS (Client → Server):
+   ──────────────────────────────
+   
+   socket.emit('edit_message', {
+     messageId: 123,
+     messageText: 'New text'
+   });
+   
+   socket.emit('delete_for_everyone', {
+     messageId: 124
+   });
+   
+   socket.emit('add_reaction', {
+     messageId: 125,
+     reaction: '❤️'
+   });
+   
+   socket.emit('remove_reaction', {
+     messageId: 125,
+     reaction: '❤️'
+   });
+
+
+   LISTEN EVENTS (Server → Client):
+   ─────────────────────────────────
+   
+   socket.on('message_edited', (message) => {
+     // Update message in state
+     setMessages(prev => prev.map(msg => 
+       msg.id === message.id ? message : msg
+     ));
+   });
+   
+   socket.on('message_deleted', ({ messageId }) => {
+     // Mark message as deleted
+     setMessages(prev => prev.map(msg => 
+       msg.id === messageId 
+         ? { ...msg, is_deleted: true, message_text: null }
+         : msg
+     ));
+   });
+   
+   socket.on('reaction_updated', ({ messageId, reactions }) => {
+     // Update reactions
+     setMessages(prev => prev.map(msg => 
+       msg.id === messageId 
+         ? { ...msg, reactions }
+         : msg
+     ));
+   });
+
+
+═══════════════════════════════════════════════════════════════════════════
+  🎯 COMPLETE USER JOURNEY
+═══════════════════════════════════════════════════════════════════════════
+
+   SCENARIO: User sends message with typo, edits, adds reaction
+   ──────────────────────────────────────────────────────────────
+   
+   1. User A: Send "Helo" ──────────────> User B: Receives "Helo"
+   
+   2. User A: "Oh typo!"
+      Long press → Edit → "Hello"
+                                           User B: Sees "Hello" + "Edited" tag
+   
+   3. User B: Long press → Add Reaction → ❤️
+      
+      User A: Sees ❤️ below message ◄───── User B: Sees ❤️ (highlighted)
+   
+   4. User A: Tap ❤️ (add own reaction)
+                                           User B: Sees ❤️ 2 counter update
+      
+   5. User A: "Actually delete this"
+      Long press → Delete for Everyone
+      
+      User A: "🚫 This message           User B: "🚫 This message
+              was deleted"                       was deleted"
+              
+   ✅ All changes synchronized in real-time via Socket.IO!
+
+
+═══════════════════════════════════════════════════════════════════════════
+
+                    🎉 FEATURE FLOWS COMPLETE 🎉
+                         
+═══════════════════════════════════════════════════════════════════════════

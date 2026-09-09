@@ -1,0 +1,439 @@
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                                                                           ║
+║                    🎉 NEXTALK NEW FEATURES ADDED 🎉                       ║
+║                                                                           ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+
+┌───────────────────────────────────────────────────────────────────────────┐
+│  1️⃣  EDIT MESSAGES ✏️                                                     │
+└───────────────────────────────────────────────────────────────────────────┘
+
+  What you can do:
+  ✅ Edit your sent text messages
+  ✅ Time limit: 10 minutes after sending
+  ✅ Shows "Edited" tag
+  ✅ Real-time updates for both users
+
+  How it looks:
+  
+  ┌─────────────────────┐
+  │ Hello World!        │  ← Your edited message
+  │ Edited              │  ← Gray italic tag
+  │         8:30 PM  ✓✓ │
+  └─────────────────────┘
+
+  How to use:
+  1. Long press your message
+  2. Tap "Edit Message"
+  3. Type new text → Save
+  4. Done! ✨
+
+
+┌───────────────────────────────────────────────────────────────────────────┐
+│  2️⃣  DELETE FOR EVERYONE 🗑️                                               │
+└───────────────────────────────────────────────────────────────────────────┘
+
+  What you can do:
+  ✅ Delete messages from BOTH chats
+  ✅ Time limit: 10 minutes after sending
+  ✅ Shows deletion placeholder
+  ✅ Works for text, images, and files
+
+  Options:
+  📌 Delete for Me → Only removes from your chat (no time limit)
+  📌 Delete for Everyone → Removes from both chats (10 min limit)
+
+  How it looks BEFORE:
+  
+  ┌─────────────────────┐
+  │ Oops wrong chat!    │
+  │         8:30 PM  ✓✓ │
+  └─────────────────────┘
+
+  How it looks AFTER deletion:
+  
+  ┌─────────────────────┐
+  │ 🚫 This message     │  ← Faded gray
+  │    was deleted      │
+  └─────────────────────┘
+
+  How to use:
+  1. Long press your message (within 10 min)
+  2. Tap "Delete for Everyone"
+  3. Confirm
+  4. Poof! Gone from both chats! 💨
+
+
+┌───────────────────────────────────────────────────────────────────────────┐
+│  3️⃣  MESSAGE REACTIONS 😍                                                 │
+└───────────────────────────────────────────────────────────────────────────┘
+
+  What you can do:
+  ✅ React to any message with emoji
+  ✅ 6 reactions: ❤️ 👍 😂 😮 😢 🙏
+  ✅ See reaction counts
+  ✅ Quick toggle on/off
+  ✅ Real-time updates
+
+  How it looks:
+  
+  ┌─────────────────────┐
+  │ Great idea!         │  ← Message text
+  │                     │
+  │ ❤️ 3  👍 2  😂 1    │  ← Reaction bubbles with counts
+  │         8:30 PM  ✓✓ │
+  └─────────────────────┘
+
+  Your reaction:
+  
+  │ ❤️ 3 │ ← Blue background (you reacted)
+  
+  Others' reactions:
+  
+  │ 👍 2 │ ← Gray background (you didn't react)
+
+  How to use:
+
+  Method 1: Long press menu
+  1. Long press any message
+  2. Tap "❤️ Add Reaction"
+  3. Choose emoji
+  4. Done! ✨
+
+  Method 2: Quick toggle
+  1. Tap existing reaction bubble
+  2. If you haven't reacted → Adds your reaction
+  3. If you already reacted → Removes your reaction
+
+
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                          📋 QUICK COMPARISON                              ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+┌─────────────────┬──────────────┬──────────────┬──────────────────────────┐
+│ FEATURE         │ WHO CAN USE  │ TIME LIMIT   │ REAL-TIME UPDATES        │
+├─────────────────┼──────────────┼──────────────┼──────────────────────────┤
+│ Edit Message    │ Message owner│ 10 minutes   │ ✅ Yes (Socket.IO)       │
+│ Delete for All  │ Message owner│ 10 minutes   │ ✅ Yes (Socket.IO)       │
+│ Delete for Me   │ Message owner│ ❌ No limit   │ ❌ No (only local)       │
+│ Add Reaction    │ Anyone       │ ❌ No limit   │ ✅ Yes (Socket.IO)       │
+│ Remove Reaction │ Anyone       │ ❌ No limit   │ ✅ Yes (Socket.IO)       │
+└─────────────────┴──────────────┴──────────────┴──────────────────────────┘
+
+
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                     🎯 WHAT MESSAGES CAN BE EDITED?                       ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+  ✅ Text messages (within 10 min)
+  ❌ Image messages (can't edit)
+  ❌ File messages (can't edit)
+  ❌ Someone else's messages (can't edit)
+  ❌ Messages older than 10 minutes (can't edit)
+
+
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                    🗑️  DELETE OPTIONS EXPLAINED                           ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+  DELETE FOR ME:
+  ─────────────────────────────────────────────────────────
+  ✅ Available: Always (no time limit)
+  ✅ Effect: Removes from YOUR chat only
+  ❌ Other user: Still sees the message
+  ✅ Use case: Clean up your own chat
+  
+  Example:
+  Your chat:        Their chat:
+  [empty]           "Hello there!"
+  
+
+  DELETE FOR EVERYONE:
+  ─────────────────────────────────────────────────────────
+  ✅ Available: Within 10 minutes only
+  ✅ Effect: Removes from BOTH chats
+  ✅ Shows: "🚫 This message was deleted"
+  ✅ Use case: Sent wrong message, typo, regret
+
+  Example:
+  Your chat:                Their chat:
+  "🚫 This message          "🚫 This message
+   was deleted"              was deleted"
+
+
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                       😍 REACTION BEHAVIOR                                ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+  1 USER, 1 REACTION PER MESSAGE:
+  ─────────────────────────────────────────────────────────
+  You: ❤️
+  You change to: 👍
+  Result: Only 👍 shows (replaces ❤️)
+
+
+  MULTIPLE USERS, SAME REACTION:
+  ─────────────────────────────────────────────────────────
+  User A: ❤️
+  User B: ❤️
+  Result: ❤️ 2 (counter shows)
+
+
+  MULTIPLE REACTIONS:
+  ─────────────────────────────────────────────────────────
+  User A: ❤️
+  User B: 👍
+  User C: 😂
+  User D: ❤️
+  Result: ❤️ 2  👍 1  😂 1
+
+
+  QUICK TOGGLE:
+  ─────────────────────────────────────────────────────────
+  Tap reaction bubble you HAVEN'T used → Adds your reaction
+  Tap reaction bubble you HAVE used → Removes your reaction
+
+
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                        ⚙️  TECHNICAL DETAILS                              ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+  DATABASE CHANGES:
+  ─────────────────────────────────────────────────────────
+  messages table:
+    + edited_at TIMESTAMP NULL
+    + is_deleted BOOLEAN DEFAULT FALSE
+
+  New table: message_reactions
+    - id (primary key)
+    - message_id (foreign key)
+    - user_id (foreign key)
+    - reaction (emoji text)
+    - created_at (timestamp)
+
+
+  BACKEND ROUTES:
+  ─────────────────────────────────────────────────────────
+  PUT    /api/messages/edit/:messageId
+  DELETE /api/messages/delete-for-everyone/:messageId
+  POST   /api/messages/:messageId/reactions
+  DELETE /api/messages/:messageId/reactions
+  GET    /api/messages/:messageId/reactions
+
+
+  SOCKET.IO EVENTS:
+  ─────────────────────────────────────────────────────────
+  Emit:
+    - edit_message
+    - delete_for_everyone
+    - add_reaction
+    - remove_reaction
+
+  Listen:
+    - message_edited
+    - message_deleted
+    - reaction_updated
+
+
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                       🚀 ACTIVATION STEPS                                 ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+  STEP 1: Update Database
+  ──────────────────────────────────────────────────────────
+  1. Open phpMyAdmin
+  2. Select database: messanger
+  3. SQL tab
+  4. Run: backend/database/update-schema.sql
+  5. ✅ Success!
+
+
+  STEP 2: Restart Backend
+  ──────────────────────────────────────────────────────────
+  1. Backend terminal: Ctrl + C
+  2. npm start
+  3. ✅ Server running!
+
+
+  STEP 3: Reload Mobile
+  ──────────────────────────────────────────────────────────
+  1. Shake phone OR press 'r'
+  2. ✅ Features active!
+
+
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                        ✅ FEATURES PRESERVED                              ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+  Everything still works:
+  ✅ Send text/image/file messages
+  ✅ Read receipts (✓ and ✓✓)
+  ✅ Copy messages
+  ✅ Profile pictures & avatars (colorful circles)
+  ✅ Online/offline status
+  ✅ Typing indicators
+  ✅ Unread counts
+  ✅ Chat list ordering
+  ✅ User profile (full name, bio)
+  ✅ Settings page
+  ✅ Change password
+  ✅ Real-time socket communication
+
+
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                          🎨 UI EXAMPLES                                   ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+  LONG PRESS MENU (YOUR MESSAGE, WITHIN 10 MIN):
+  ─────────────────────────────────────────────────────────
+  ┌─────────────────────────────────┐
+  │  Copy Message                   │
+  │  Edit Message                   │
+  │  Delete for Everyone            │
+  │  Delete for Me                  │
+  │  ❤️ Add Reaction                │
+  │  Cancel                         │
+  └─────────────────────────────────┘
+
+
+  LONG PRESS MENU (YOUR MESSAGE, AFTER 10 MIN):
+  ─────────────────────────────────────────────────────────
+  ┌─────────────────────────────────┐
+  │  Copy Message                   │
+  │  Delete for Me                  │  ← No "for Everyone"
+  │  ❤️ Add Reaction                │
+  │  Cancel                         │
+  └─────────────────────────────────┘
+
+
+  LONG PRESS MENU (OTHER'S MESSAGE):
+  ─────────────────────────────────────────────────────────
+  ┌─────────────────────────────────┐
+  │  Copy Message                   │  ← Can't delete
+  │  ❤️ Add Reaction                │
+  │  Cancel                         │
+  └─────────────────────────────────┘
+
+
+  REACTION PICKER:
+  ─────────────────────────────────────────────────────────
+  ┌─────────────────────────────────┐
+  │  Choose Reaction                │
+  │                                 │
+  │  ❤️                              │  ← Heart
+  │  👍                              │  ← Thumbs up
+  │  😂                              │  ← Laugh
+  │  😮                              │  ← Wow
+  │  😢                              │  ← Sad
+  │  🙏                              │  ← Pray/Thanks
+  │  Cancel                         │
+  └─────────────────────────────────┘
+
+
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                         ⚠️  IMPORTANT NOTES                               ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+  ⏰ TIME LIMITS:
+  ─────────────────────────────────────────────────────────
+  • Edit messages: 10 minutes
+  • Delete for everyone: 10 minutes
+  • Reactions: No limit
+  • Delete for me: No limit
+
+  🚫 RESTRICTIONS:
+  ─────────────────────────────────────────────────────────
+  • Can only edit TEXT messages (not images/files)
+  • Can only edit/delete YOUR OWN messages
+  • Deleted messages kept in DB (marked as deleted)
+  • Each user: 1 reaction per message (can change it)
+
+  💾 DATABASE:
+  ─────────────────────────────────────────────────────────
+  • Deleted messages NOT removed (is_deleted = TRUE)
+  • Message text/files cleared on "delete for everyone"
+  • Reactions cascade delete (if message deleted, reactions go too)
+
+  🔄 REAL-TIME:
+  ─────────────────────────────────────────────────────────
+  • All changes broadcast via Socket.IO
+  • Both users see updates instantly
+  • Fallback to HTTP if socket disconnected
+
+
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                         🎯 SUCCESS INDICATORS                             ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+  Backend Terminal Should Show:
+  ─────────────────────────────────────────────────────────
+  ✏️  Message edited: 123 by emma
+  🗑️  Message deleted for everyone: 124 by john
+  ❤️  Reaction added: ❤️ to message 125 by emma
+  💔 Reaction removed: ❤️ from message 125 by john
+
+
+  Mobile App Should Show:
+  ─────────────────────────────────────────────────────────
+  ✅ "Edited" tag on edited messages
+  ✅ "🚫 This message was deleted" for deleted messages
+  ✅ Reaction bubbles below messages
+  ✅ Instant updates when other user acts
+
+
+  Database Should Have:
+  ─────────────────────────────────────────────────────────
+  ✅ messages.edited_at column
+  ✅ messages.is_deleted column
+  ✅ message_reactions table
+  ✅ Data stored correctly
+
+
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                        🐛 TROUBLESHOOTING                                 ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+  "Edit Message not showing":
+  ─────────────────────────────────────────────────────────
+  ✓ Check if you're the message sender
+  ✓ Check if within 10 minutes
+  ✓ Check if text message (not image)
+  ✓ Reload mobile app
+
+
+  "Delete for Everyone not working":
+  ─────────────────────────────────────────────────────────
+  ✓ Check if within 10 minutes
+  ✓ Check backend logs for errors
+  ✓ Check database: is_deleted = TRUE?
+  ✓ Check socket connection
+
+
+  "Reactions not showing":
+  ─────────────────────────────────────────────────────────
+  ✓ Check backend terminal for errors
+  ✓ Check database: message_reactions table exists?
+  ✓ Reload mobile app
+  ✓ Check API call: /api/messages/:id/reactions
+
+
+  "Changes not real-time":
+  ─────────────────────────────────────────────────────────
+  ✓ Check socket connection (backend logs)
+  ✓ Check SOCKET_URL in config (172.20.10.1:3000)
+  ✓ Restart backend server
+  ✓ Reload mobile app
+
+
+═══════════════════════════════════════════════════════════════════════════
+
+                        🎉 NEXTALK v1.3 - READY! 🎉
+
+═══════════════════════════════════════════════════════════════════════════
+
+              Built with ❤️ by Kiro AI Assistant
+              Date: September 5, 2026
+              Status: ✅ Complete & Ready to Test
+
+═══════════════════════════════════════════════════════════════════════════
